@@ -18,7 +18,6 @@ class LearningAgent(Agent):
         self.Q = dict()          # Create a Q-table which will be a dictionary of tuples
         self.epsilon = epsilon   # Random exploration factor
         self.alpha = alpha       # Learning factor
-        self.count = 1
 
         ###########
         ## TO DO ##
@@ -48,7 +47,9 @@ class LearningAgent(Agent):
             #self.epsilon = 1./float(self.count*self.count)
             #self.epsilon = 0.5 +  0.5*math.cos(self.count * math.pi / 200.0)
             self.epsilon *= 0.99
-            self.count += 1
+
+            # Update additional class parameters as needed
+
         return None
 
     def build_state(self):
@@ -140,7 +141,7 @@ class LearningAgent(Agent):
             #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
             #self.Q[state][action] = (1 - self.alpha) * self.Q[state][action] + self.alpha * reward
 
-            #   Use the learning rate 'alpha' and factor 'gamma')
+            #   Use the learning rate 'alpha' and factor 'gamma'
             utility = reward + self.gamma*self.get_maxQ(state)
             self.Q[state][action] = (1 - self.alpha) * self.Q[state][action] + self.alpha * utility
         return
@@ -178,7 +179,8 @@ def run():
     #   learning   - set to True to force the driving agent to use Q-learning
     #    * epsilon - continuous value for the exploration factor, default is 1
     #    * alpha   - continuous value for the learning rate, default is 0.5
-    agent = env.create_agent(LearningAgent)
+    #    * gamma   - continuous value for the gamma, default is  0.5
+    agent = env.create_agent(LearningAgent, epsilon=1, alpha=0.5, gamma=0.5)
     
     ##############
     # Follow the driving agent
@@ -200,6 +202,7 @@ def run():
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 10
+    #   min_training_trials - min training trials default is 20
     sim.run(tolerance=0.01, n_test=20)
 
 
