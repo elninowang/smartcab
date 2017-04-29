@@ -32,7 +32,7 @@ class Environment(object):
     valid_headings = [(1, 0), (0, -1), (-1, 0), (0, 1)]  # E, N, W, S
     hard_time_limit = -100  # Set a hard time limit even if deadline is not enforced.
 
-    def __init__(self, verbose=False, num_dummies=100, grid_size = (8, 6)):
+    def __init__(self, verbose=True, num_dummies=100, grid_size = (8, 6)):
         self.num_dummies = num_dummies  # Number of dummy driver agents in the environment
         self.verbose = verbose # If debug output should be given
 
@@ -75,7 +75,7 @@ class Environment(object):
 
         # Primary agent and associated parameters
         self.primary_agent = None  # to be set explicitly
-        self.enforce_deadline = False
+        self.enforce_deadline = True
 
         # Trial data (updated at the end of each trial)
         self.trial_data = {
