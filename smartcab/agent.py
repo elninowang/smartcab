@@ -8,7 +8,7 @@ class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.
         This is the object you will be modifying. """ 
 
-    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.5):
+    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.5, gamma=0.5):
         super(LearningAgent, self).__init__(env)     # Set the agent in the evironment 
         self.planner = RoutePlanner(self.env, self)  # Create a route planner
         self.valid_actions = self.env.valid_actions  # The set of valid actions
@@ -24,7 +24,7 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set any additional class parameters as needed
-
+        self.gamma=gamma
 
     def reset(self, destination=None, testing=False):
         """ The reset function is called at the beginning of each trial.
@@ -79,8 +79,7 @@ class LearningAgent(Agent):
         ###########
         # Calculate the maximum Q-value of all actions for a given state
         actions = self.Q[state]
-        actions = dict()
-        maxQ = max(actions.values())
+        maxQ = max(actions.items(), key=lambda x:x[1])[1]
         return maxQ 
 
 
@@ -139,8 +138,11 @@ class LearningAgent(Agent):
         # When learning, implement the value iteration update rule
         if self.learning:
             #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
-            self.Q[state][action] = (1-self.alpha)*self.Q[state][action] + self.alpha*reward
+            #self.Q[state][action] = (1 - self.alpha) * self.Q[state][action] + self.alpha * reward
 
+            #   Use the learning rate 'alpha' and factor 'gamma')
+            utility = reward + self.gamma*self.get_maxQ(state)
+            self.Q[state][action] = (1 - self.alpha) * self.Q[state][action] + self.alpha * utility
         return
 
 
@@ -198,7 +200,7 @@ def run():
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 10
-    sim.run(tolerance=0.1, n_test=20)
+    sim.run(tolerance=0.01, n_test=20)
 
 
 if __name__ == '__main__':
